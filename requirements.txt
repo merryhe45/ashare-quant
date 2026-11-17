@@ -1,0 +1,177 @@
+# A-Share Quant Engine v2
+
+A fast A-share technical factor scanning engine using:
+
+- ashare-lake
+- Polars
+- Python
+- PowerShell
+
+## Current Factors
+
+### Formula 1 — Breakout 400
+
+```text
+C > REF(HHV(C,400),1)
+```
+
+### Formula 2 — Pit Signal
+
+```text
+Event A:
+
+C > O
+AND 4.9% < daily rise <= 9.0%
+AND C < REF(HHV(H,5),1)
+AND C > MA(C,250)
+
+Final signal:
+
+COUNT(A,30) >= 2
+AND C >= MA(C,250)
+AND 60-day amplitude <= 50%
+```
+
+### Formula 3 — MA20 / MA60 Golden Cross
+
+```text
+CROSS(MA(C,20), MA(C,60))
+```
+
+## Architecture
+
+The engine obtains the current A-share universe on the scan date,
+then loads complete historical data for those symbols without applying
+historical universe filtering.
+
+This is intentional.
+
+Do NOT change the historical query to:
+
+```python
+universe="all_a"
+```
+
+Historical loading must use:
+
+```python
+symbols=current_symbols
+universe=None
+```
+
+## Requirements
+
+- Windows
+- PowerShell
+- Python available as `python`
+- `ashare_lake` Python package installed
+- `asl` CLI available on PATH
+- A working ashare-lake TOML configuration
+- Polars
+
+Install Python dependency:
+
+```powershell
+python -m pip install -r requirements.txt
+```
+
+## Configuration
+
+Set the ashare-lake config path:
+
+```powershell
+$env:ASHARE_LAKE_CONFIG = "C:\path\to\ashare-lake.toml"
+```
+
+Or pass it explicitly:
+
+```powershell
+.\daily_quant.ps1 -Config "C:\path\to\ashare-lake.toml"
+```
+
+## Daily Run
+
+```powershell
+.\daily_quant.ps1
+```
+
+The workflow:
+
+```text
+Determine latest trading date
+        ↓
+Update stale ashare-lake datasets
+        ↓
+Derive adjustment factors
+        ↓
+Verify Data Lake freshness
+        ↓
+Run Quant Engine v2
+        ↓
+Generate factor results
+        ↓
+Write JSON results
+```
+
+## Quant Engine Only
+
+Run the latest trading day automatically:
+
+```powershell
+python .\run_pipeline_v2.py
+```
+
+Or specify a date:
+
+```powershell
+python .\run_pipeline_v2.py --scan-date 2026-08-28
+```
+
+Or specify a config:
+
+```powershell
+python .\run_pipeline_v2.py `
+    --scan-date 2026-08-28 `
+    --config "C:\path\to\ashare-lake.toml"
+```
+
+## JSON Results
+
+Successful runs write:
+
+```text
+results/
+    quant_YYYY-MM-DD.json
+    latest.json
+```
+
+`latest.json` represents the latest successfully published scan result.
+
+## Regression Baseline
+
+The validated regression date is:
+
+```text
+2026-08-28
+```
+
+Validated exact outputs:
+
+- breakout_400: 21 symbols
+- pit_signal: 18 symbols
+
+Regression testing compares exact symbol sets, not only counts.
+
+The regression date is a test fixture. It is NOT the production scan date.
+
+Normal production scans dynamically use the latest trading day.
+
+## Adding New Factors
+
+New factors should normally require:
+
+1. Add the factor calculator to `factors_v2.py`.
+2. Register it in `factor_registry.py`.
+
+The generic factor engine in `run_pipeline_v2.py` should not require
+factor-specific modifications.

@@ -1,0 +1,12 @@
+data_root = "C:/Users/merry/data/ashare-lake"
+m3a_reference = "m3a-20261102T074851461727Z-9ad8e456"
+evaluation_start = "2020-01-02"
+evaluation_end = "2021-12-31"
+horizon = 20
+quantiles = 3
+min_cross_section = 30
+min_bucket = 5
+min_paired = 30
+coverage_threshold = 0.9
+min_liquidity_unit_rows = 20
+min_liquidity_unit_pass_fraction = 0.99

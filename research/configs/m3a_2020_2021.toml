@@ -1,0 +1,13 @@
+data_root = "C:/Users/merry/data/ashare-lake"
+cohort_date = "2020-01-02"
+evaluation_start = "2020-01-02"
+evaluation_end = "2021-12-31"
+selection_seed = "ashare-m3a-cohort-v1"
+per_exchange = 50
+lookback = 60
+horizon = 20
+quantiles = 3
+min_cross_section = 30
+min_bucket = 5
+min_paired = 30
+coverage_threshold = 0.9

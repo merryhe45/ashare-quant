@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ashare-research"
+version = "0.1.0"
+description = "Isolated exploratory A-share factor research"
+requires-python = ">=3.11"
+dependencies = ["polars==1.43.2", "ashare-lake==0.5.0"]
+
+[project.scripts]
+ashare-research = "ashare_research.experiment:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

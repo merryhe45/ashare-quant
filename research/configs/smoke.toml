@@ -1,0 +1,9 @@
+data_root = "C:/Users/merry/data/ashare-lake"
+load_start = "2025-01-01"
+load_end = "2025-12-31"
+evaluation_start = "2025-05-01"
+evaluation_end = "2025-11-28"
+symbols = ["000001.SZ", "000002.SZ", "000333.SZ", "000651.SZ", "600036.SH", "600276.SH", "600519.SH", "601318.SH", "601398.SH"]
+lookback = 60
+horizon = 20
+quantiles = 3
